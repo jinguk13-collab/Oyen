@@ -1,0 +1,89 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #7EE8FA, #EEC0C6);
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: white;
+  padding: 25px 28px;
+  border-radius: 14px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  animation: fadeIn .4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 8px;
+  color: #004aad;
+}
+
+p {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: 600;
+  color: #333;
+}
+
+input {
+  padding: 10px;
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: .2s;
+  font-size: 15px;
+}
+
+input:focus {
+  border-color: #00a8e8;
+  box-shadow: 0 0 6px rgba(0,168,232,0.4);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  background: #0066ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .25s;
+}
+
+button:hover:not(:disabled) {
+  background: #0056d6;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background: #9bbaff;
+  cursor: not-allowed;
+}
+
+#status {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 12px;
+}
