@@ -1,118 +1,97 @@
 <!DOCTYPE html>
 <html>
-  <link rel="stylesheet" href="style.css">
-  <div class="container">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   <title>Pembukuan Es Oyen</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body{font-family:sans-serif;padding:18px;background:#f7fbfd}
     input,button{padding:8px;margin:6px 0;width:100%;box-sizing:border-box}
-    .row{max-width:420px}
+    .row{max-width:420px;margin:auto}
     .status{margin-top:12px}
   </style>
 </head>
 <body>
-  <div class="row">
-    <h2>Pembukuan Es Oyen</h2>
-    <p>Masukkan data transaksi harian</p>
-
-    <label>Tanggal:</label>
-    <input type="date" id="tanggal">
-
-    <label>Keterangan:</label>
-    <input type="text" id="keterangan" placeholder="Hasil jualan / beli bahan">
-
-    <label>Omzet Masuk (Rp):</label>
-    <input type="text" id="omzet" placeholder="Masukkan nominal">
-
-    <label>Uang Keluar (Rp):</label>
-    <input type="text" id="keluar" placeholder="Masukkan nominal">
-
-    <button id="saveBtn" onclick="saveData()">Simpan</button>
-
-    <p id="status" class="status"></p>
-  </div>
 
 <script>
-  if(user === USERNAME && pass === PASSWORD){
-  // Simpan status login
-  localStorage.setItem('loggedIn', 'true');
-  // Redirect ke index.html
-  window.location.href = 'index.html';
+  // Proteksi login: cek session
+  if(localStorage.getItem('loggedIn') !== 'true'){
+    window.location.href = 'login.html';
   }
+</script>
+
+<div class="row">
+  <h2>Pembukuan Es Oyen</h2>
+  <p>Masukkan data transaksi harian</p>
+
+  <label>Tanggal:</label>
+  <input type="date" id="tanggal">
+
+  <label>Keterangan:</label>
+  <input type="text" id="keterangan" placeholder="Hasil jualan / beli bahan">
+
+  <label>Omzet Masuk (Rp):</label>
+  <input type="text" id="omzet" placeholder="Masukkan nominal">
+
+  <label>Uang Keluar (Rp):</label>
+  <input type="text" id="keluar" placeholder="Masukkan nominal">
+
+  <button id="saveBtn" onclick="saveData()">Simpan</button>
+  <button onclick="logout()" style="margin-top:10px;background:#ff4d4d;">Logout</button>
+
+  <p id="status" class="status"></p>
+</div>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyghgIPLuyQFv2jkRsZvYOE7e1kxxs_vzcxihvQN-umTWm4d7babCiY53__bb4OOLU51w/exec";
+const btn = document.getElementById('saveBtn');
+const statusEl = document.getElementById('status');
+const omzetInput = document.getElementById("omzet");
+const keluarInput = document.getElementById("keluar");
+
+function formatRupiah(el){
+  let val = el.value.replace(/[^\d]/g,"");
+  el.value = val ? "Rp " + val.replace(/\B(?=(\d{3})+(?!\d))/g,".") : "";
 }
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyghgIPLuyQFv2jkRsZvYOE7e1kxxs_vzcxihvQN-umTWm4d7babCiY53__bb4OOLU51w/exec";
-  const btn = document.getElementById('saveBtn');
-  const statusEl = document.getElementById('status');
-  const omzetInput = document.getElementById("omzet");
-  const keluarInput = document.getElementById("keluar");
 
-  function formatRupiah(el){
-    let val = el.value.replace(/[^\d]/g,"");
-    el.value = val ? "Rp " + val.replace(/\B(?=(\d{3})+(?!\d))/g,".") : "";
-  }
+omzetInput.addEventListener("input", function(){
+  formatRupiah(this);
+  keluarInput.disabled = this.value !== "";
+});
+keluarInput.addEventListener("input", function(){
+  formatRupiah(this);
+  omzetInput.disabled = this.value !== "";
+});
 
-  omzetInput.addEventListener("input", function(){
-    formatRupiah(this);
-    if(this.value !== "") keluarInput.disabled = true;
-    else keluarInput.disabled = false;
-  });
+function getNumber(str){ return parseInt(str.replace(/[^\d]/g,"")) || 0; }
+function setStatus(msg, error=false){ statusEl.innerText = msg; statusEl.style.color = error?"red":"green"; }
 
-  keluarInput.addEventListener("input", function(){
-    formatRupiah(this);
-    if(this.value !== "") omzetInput.disabled = true;
-    else omzetInput.disabled = false;
-  });
+function saveData(){
+  const tanggal = document.getElementById('tanggal').value;
+  if(!tanggal) return setStatus("Tanggal harus diisi!", true);
 
-  function getNumber(str){
-    return parseInt(str.replace(/[^\d]/g,"")) || 0;
-  }
+  const omzetNum = getNumber(omzetInput.value);
+  const keluarNum = getNumber(keluarInput.value);
 
-  function setStatus(msg, error=false){
-    statusEl.innerText = msg;
-    statusEl.style.color = error ? "red" : "green";
-  }
+  if((omzetNum === 0) && (keluarNum === 0)) return setStatus("Isi salah satu Omzet atau Keluar!", true);
+  if((omzetNum > 0) && (keluarNum > 0)) return setStatus("Tidak boleh 2 kolom terisi!", true);
 
-  function saveData(){
-    const tanggal = document.getElementById('tanggal').value;
-    if(!tanggal) return setStatus("Tanggal harus diisi!", true);
+  btn.disabled = true;
+  setStatus("Menyimpan...");
 
-    let omzetNum = getNumber(omzetInput.value);
-    let keluarNum = getNumber(keluarInput.value);
+  const data = { tanggal, keterangan: document.getElementById('keterangan').value, omzet: omzetNum, keluar: keluarNum };
 
-    if((omzetNum === 0) && (keluarNum === 0)){
-      return setStatus("Isi salah satu Omzet atau Keluar!", true);
-    }
-    if((omzetNum > 0) && (keluarNum > 0)){
-      return setStatus("Tidak boleh 2 kolom terisi!", true);
-    }
+  fetch(WEB_APP_URL, {
+    method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body:JSON.stringify(data)
+  })
+  .then(()=>{ window.location.href="thanks.html"; })
+  .catch(()=>{ btn.disabled=false; setStatus("Gagal mengirim!", true); });
+}
 
-    btn.disabled = true;
-    setStatus("Menyimpan...");
-
-    const data = {
-      tanggal: tanggal,
-      keterangan: document.getElementById('keterangan').value,
-      omzet: omzetNum,
-      keluar: keluarNum
-    };
-
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    })
-    .then(() => {
-      window.location.href = "thanks.html";
-    })
-    .catch(() => {
-      btn.disabled = false;
-      setStatus("Gagal mengirim!", true);
-    });
-  }
+function logout(){
+  localStorage.removeItem('loggedIn');
+  window.location.href = 'login.html';
+}
 </script>
 </body>
 </html>
