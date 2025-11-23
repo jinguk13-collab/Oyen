@@ -1,75 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Terima Kasih</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #7EE8FA, #EEC0C6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .container {
-      background: white;
-      padding: 30px 25px;
-      border-radius: 16px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-      animation: fadeIn 0.5s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h2 {
-      color: #004aad;
-      margin-bottom: 10px;
-    }
-
-    p {
-      color: #333;
-      margin-bottom: 20px;
-      font-size: 15px;
-    }
-
-    .btn-home {
-      display: inline-block;
-      padding: 12px 25px;
-      background: #0066ff;
-      color: white;
-      border-radius: 10px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: 0.25s;
-    }
-
-    .btn-home:hover {
-      background: #0056d6;
-      transform: translateY(-2px);
-    }
-
-    img {
-      width: 100px;
-      margin-bottom: 15px;
-    }
-  </style>
+<meta charset="utf-8">
+<title>Terima Kasih</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #7EE8FA, #EEC0C6);
+    display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;
+  }
+  .container {
+    background: white; padding: 30px 25px; border-radius: 16px;
+    max-width: 400px; width: 90%; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+  h2 { color:#004aad; margin-bottom:10px; }
+  p { color:#333; font-size:15px; margin-bottom:20px; }
+  .btn-home { display:inline-block; padding:12px 25px; background:#0066ff; color:white; border-radius:10px;
+    font-weight:600; text-decoration:none; transition:0.25s;
+  }
+  .btn-home:hover { background:#0056d6; transform:translateY(-2px); }
+</style>
 </head>
 <body>
-  <div class="container">
-    <img src="logo.png" alt="Logo Es Oyen">
-    <h2>Terima Kasih!</h2>
-    <p>Data transaksi kamu berhasil disimpan.</p>
-    <a href="index.html" class="btn-home">Kembali ke Form</a>
-  </div>
+<div class="container">
+  <h2>Terima Kasih!</h2>
+  <p>Data transaksi berhasil disimpan.</p>
+  <a href="index.html" class="btn-home">Kembali ke Form</a>
+</div>
 </body>
 </html>
