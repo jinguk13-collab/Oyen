@@ -22,11 +22,12 @@
     <label>Keterangan:</label>
     <input type="text" id="keterangan" placeholder="Hasil jualan / beli bahan">
 
-    <label>Omzet Masuk (Rp):</label>
-    <input type="number" id="omzet" value="0">
 
-    <label>Uang Keluar (Rp):</label>
-    <input type="number" id="keluar" value="0">
+    <label>Omzet Masuk (Rp):</label><br>
+<input type="text" id="omzet" placeholder="Masukkan nominal"><br><br>
+
+<label>Uang Keluar (Rp):</label><br>
+<input type="text" id="keluar" placeholder="Masukkan nominal"><br><br>
 
     <button id="saveBtn" onclick="saveData()">Simpan</button>
 
@@ -80,6 +81,27 @@
       console.error('Fetch error:', err);
       setStatus('Gagal mengirim. Coba lagi.', true);
       btn.disabled = false;
+      function formatRupiahInput(input) {
+  let value = input.value.replace(/[^\d]/g, "");
+  if (!value) {
+    input.value = "";
+    return;
+  }
+  input.value = "Rp " + value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+document.getElementById("omzet").addEventListener("input", function () {
+  formatRupiahInput(this);
+});
+
+document.getElementById("keluar").addEventListener("input", function () {
+  formatRupiahInput(this);
+});
+
+// Convert to number before sending
+function getNumber(str) {
+  return parseInt(str.replace(/[^\d]/g, "")) || 0;
+}
     });
   }
 </script>
