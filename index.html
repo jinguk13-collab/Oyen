@@ -36,6 +36,11 @@
   </div>
 
 <script>
+  // Cek apakah user sudah login
+if(localStorage.getItem('loggedIn') !== 'true'){
+  // Kalau belum, redirect ke login
+  window.location.href = 'login.html';
+}
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyghgIPLuyQFv2jkRsZvYOE7e1kxxs_vzcxihvQN-umTWm4d7babCiY53__bb4OOLU51w/exec";
   const btn = document.getElementById('saveBtn');
   const statusEl = document.getElementById('status');
