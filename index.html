@@ -27,27 +27,30 @@
   <p id="status"></p>
 
 
-  <script>
-function saveData() {
-  const btn = document.getElementById("saveBtn");
-  btn.disabled = true;
-
-  const nama = document.getElementById("nama").value;
-  const pemasukan = document.getElementById("pemasukan").value;
-  const pengeluaran = document.getElementById("pengeluaran").value;
-
-  fetch("https://script.google.com/macros/s/AKfycbyghgIPLuyQFv2jkRsZvYOE7e1kxxs_vzcxihvQN-umTWm4d7babCiY53__bb4OOLU51w/exec" + nama + "&pemasukan=" + pemasukan + "&pengeluaran=" + pengeluaran)
-  .then(res => res.json())
-  .then(data => {
-    // Kalau sukses → langsung redirect ke halaman terima kasih
-    window.location.href = "thanks.html";
-  })
-  .catch(err => {
-    alert("Gagal menyimpan data. Coba lagi!");
-    btn.disabled = false;
+<script>
+  function kirimData() {
+    document.querySelector("button").disabled = true; // Cegah double klik
     
-  });
-}
+    var data = {
+      tanggal: document.getElementById("tanggal").value,
+      keterangan: document.getElementById("keterangan").value,
+      omzet: parseInt(document.getElementById("omzet").value),
+      keluar: parseInt(document.getElementById("keluar").value)
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbxFBSB4_OZ5rkGYvogIvrPywwQotZKU0tZ2ab_OCMHIKYlNwY4oc-a7ZWIRFbTTvCAclA/exec", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "text/plain;charset=utf-8" }
+    })
+    .then(res => {
+      window.location.href = "thanks.html"; // Redirect setelah sukses
+    })
+    .catch(err => {
+      document.getElementById("status").innerText = "Gagal mengirim!";
+      document.querySelector("button").disabled = false;
+    });
+  }
 </script>
 </body>
 </html>
