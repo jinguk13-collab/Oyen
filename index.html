@@ -1,54 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8" />
   <title>Pembukuan Es Oyen</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{font-family:sans-serif;padding:18px;background:#f7fbfd}
+    input,button{padding:8px;margin:6px 0;width:100%;box-sizing:border-box}
+    .row{max-width:420px}
+    .status{margin-top:12px}
+  </style>
 </head>
-<body style="font-family: sans-serif; padding: 20px;">
+<body>
+  <div class="row">
+    <h2>Pembukuan Es Oyen</h2>
+    <p>Masukkan data transaksi harian</p>
 
-  <h2>Pembukuan Es Oyen</h2>
-  <p>Masukkan data transaksi harian</p>
+    <label>Tanggal:</label>
+    <input type="date" id="tanggal">
 
-  <label>Tanggal:</label><br>
-  <input type="date" id="tanggal"><br><br>
+    <label>Keterangan:</label>
+    <input type="text" id="keterangan" placeholder="Hasil jualan / beli bahan">
 
-  <label>Keterangan:</label><br>
-  <input type="text" id="keterangan" placeholder="Hasil jualan / beli bahan"><br><br>
+    <label>Omzet Masuk (Rp):</label>
+    <input type="number" id="omzet" value="0">
 
-  <label>Omzet Masuk (Rp):</label><br>
-  <input type="number" id="omzet" value="0"><br><br>
+    <label>Uang Keluar (Rp):</label>
+    <input type="number" id="keluar" value="0">
 
-  <label>Uang Keluar (Rp):</label><br>
-  <input type="number" id="keluar" value="0"><br><br>
+    <button id="saveBtn" onclick="saveData()">Simpan</button>
 
-
-  <button id="saveBtn" onclick="saveData()">Simpan</button>
-
-  <p id="status"></p>
-
+    <p id="status" class="status"></p>
+  </div>
 
 <script>
-  function kirimData() {
-    document.querySelector("button").disabled = true; // Cegah double klik
-    
-    var data = {
-      tanggal: document.getElementById("tanggal").value,
-      keterangan: document.getElementById("keterangan").value,
-      omzet: parseInt(document.getElementById("omzet").value),
-      keluar: parseInt(document.getElementById("keluar").value)
+  // Pastikan ini URL Web App Apps Script yang sudah kamu deploy
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyghgIPLuyQFv2jkRsZvYOE7e1kxxs_vzcxihvQN-umTWm4d7babCiY53__bb4OOLU51w/exec";
+
+  const btn = document.getElementById('saveBtn');
+  const statusEl = document.getElementById('status');
+
+  function setStatus(text, isError){
+    statusEl.innerText = text;
+    statusEl.style.color = isError ? 'red' : 'green';
+  }
+
+  // Fungsi yang dipanggil oleh tombol — nama harus sama dengan onclick
+  function saveData(){
+    // simple validation
+    const tanggal = document.getElementById('tanggal').value;
+    if(!tanggal){
+      setStatus('Tanggal harus diisi', true);
+      return;
+    }
+
+    // disable tombol agar tidak bisa diklik lagi
+    btn.disabled = true;
+    setStatus('Menyimpan...');
+
+    const payload = {
+      tanggal: tanggal,
+      keterangan: document.getElementById('keterangan').value || '',
+      omzet: Number(document.getElementById('omzet').value) || 0,
+      keluar: Number(document.getElementById('keluar').value) || 0
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbyghgIPLuyQFv2jkRsZvYOE7e1kxxs_vzcxihvQN-umTWm4d7babCiY53__bb4OOLU51w/exec", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "text/plain;charset=utf-8" }
+    // gunakan no-cors supaya fetch dari GitHub Pages tidak diblokir oleh browser
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     })
-    .then(res => {
-      window.location.href = "thanks.html"; // Redirect setelah sukses
+    .then(() => {
+      // redirect ke halaman thanks (bisa diubah)
+      window.location.href = 'thanks.html';
     })
     .catch(err => {
-      document.getElementById("status").innerText = "Gagal mengirim!";
-      document.querySelector("button").disabled = false;
+      console.error('Fetch error:', err);
+      setStatus('Gagal mengirim. Coba lagi.', true);
+      btn.disabled = false;
     });
   }
 </script>
