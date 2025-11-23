@@ -21,13 +21,16 @@
   <label>Uang Keluar (Rp):</label><br>
   <input type="number" id="keluar" value="0"><br><br>
 
-  <button onclick="kirimData()">Simpan</button>
+
+  <button id="saveBtn" onclick="saveData()">Simpan</button>
 
   <p id="status"></p>
+
+
   <script>
 function saveData() {
   const btn = document.getElementById("saveBtn");
-  btn.disabled = true; // 🔒 kunci tombol setelah klik
+  btn.disabled = true;
 
   const nama = document.getElementById("nama").value;
   const pemasukan = document.getElementById("pemasukan").value;
@@ -36,15 +39,14 @@ function saveData() {
   fetch("https://script.google.com/macros/s/AKfycbyghgIPLuyQFv2jkRsZvYOE7e1kxxs_vzcxihvQN-umTWm4d7babCiY53__bb4OOLU51w/exec" + nama + "&pemasukan=" + pemasukan + "&pengeluaran=" + pengeluaran)
   .then(res => res.json())
   .then(data => {
-    alert("Data berhasil disimpan!");
-    btn.disabled = false; // 🔓 buka lagi tombol kalau berhasil
+    // Kalau sukses → langsung redirect ke halaman terima kasih
+    window.location.href = "thanks.html";
   })
   .catch(err => {
-    alert("Gagal, coba lagi!");
-    btn.disabled = false; // buka tombol kalau error
+    alert("Gagal menyimpan data. Coba lagi!");
+    btn.disabled = false;
   });
 }
-  </script>
 
 </body>
 </html>
