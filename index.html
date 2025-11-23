@@ -22,12 +22,11 @@
     <label>Keterangan:</label>
     <input type="text" id="keterangan" placeholder="Hasil jualan / beli bahan">
 
+    <label>Omzet Masuk (Rp):</label>
+    <input type="text" id="omzet" placeholder="Masukkan nominal">
 
-    <label>Omzet Masuk (Rp):</label><br>
-<input type="text" id="omzet" placeholder="Masukkan nominal"><br><br>
-
-<label>Uang Keluar (Rp):</label><br>
-<input type="text" id="keluar" placeholder="Masukkan nominal"><br><br>
+    <label>Uang Keluar (Rp):</label>
+    <input type="text" id="keluar" placeholder="Masukkan nominal">
 
     <button id="saveBtn" onclick="saveData()">Simpan</button>
 
@@ -35,73 +34,74 @@
   </div>
 
 <script>
-  // Pastikan ini URL Web App Apps Script yang sudah kamu deploy
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyghgIPLuyQFv2jkRsZvYOE7e1kxxs_vzcxihvQN-umTWm4d7babCiY53__bb4OOLU51w/exec";
-
   const btn = document.getElementById('saveBtn');
   const statusEl = document.getElementById('status');
+  const omzetInput = document.getElementById("omzet");
+  const keluarInput = document.getElementById("keluar");
 
-  function setStatus(text, isError){
-    statusEl.innerText = text;
-    statusEl.style.color = isError ? 'red' : 'green';
+  function formatRupiah(el){
+    let val = el.value.replace(/[^\d]/g,"");
+    el.value = val ? "Rp " + val.replace(/\B(?=(\d{3})+(?!\d))/g,".") : "";
   }
 
-  // Fungsi yang dipanggil oleh tombol — nama harus sama dengan onclick
+  omzetInput.addEventListener("input", function(){
+    formatRupiah(this);
+    if(this.value !== "") keluarInput.disabled = true;
+    else keluarInput.disabled = false;
+  });
+
+  keluarInput.addEventListener("input", function(){
+    formatRupiah(this);
+    if(this.value !== "") omzetInput.disabled = true;
+    else omzetInput.disabled = false;
+  });
+
+  function getNumber(str){
+    return parseInt(str.replace(/[^\d]/g,"")) || 0;
+  }
+
+  function setStatus(msg, error=false){
+    statusEl.innerText = msg;
+    statusEl.style.color = error ? "red" : "green";
+  }
+
   function saveData(){
-    // simple validation
     const tanggal = document.getElementById('tanggal').value;
-    if(!tanggal){
-      setStatus('Tanggal harus diisi', true);
-      return;
+    if(!tanggal) return setStatus("Tanggal harus diisi!", true);
+
+    let omzetNum = getNumber(omzetInput.value);
+    let keluarNum = getNumber(keluarInput.value);
+
+    if((omzetNum === 0) && (keluarNum === 0)){
+      return setStatus("Isi salah satu Omzet atau Keluar!", true);
+    }
+    if((omzetNum > 0) && (keluarNum > 0)){
+      return setStatus("Tidak boleh 2 kolom terisi!", true);
     }
 
-    // disable tombol agar tidak bisa diklik lagi
     btn.disabled = true;
-    setStatus('Menyimpan...');
+    setStatus("Menyimpan...");
 
-    const payload = {
+    const data = {
       tanggal: tanggal,
-      keterangan: document.getElementById('keterangan').value || '',
-      omzet: Number(document.getElementById('omzet').value) || 0,
-      keluar: Number(document.getElementById('keluar').value) || 0
+      keterangan: document.getElementById('keterangan').value,
+      omzet: omzetNum,
+      keluar: keluarNum
     };
 
-    // gunakan no-cors supaya fetch dari GitHub Pages tidak diblokir oleh browser
     fetch(WEB_APP_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
     })
     .then(() => {
-      // redirect ke halaman thanks (bisa diubah)
-      window.location.href = 'thanks.html';
+      window.location.href = "thanks.html";
     })
-    .catch(err => {
-      console.error('Fetch error:', err);
-      setStatus('Gagal mengirim. Coba lagi.', true);
+    .catch(() => {
       btn.disabled = false;
-      function formatRupiahInput(input) {
-  let value = input.value.replace(/[^\d]/g, "");
-  if (!value) {
-    input.value = "";
-    return;
-  }
-  input.value = "Rp " + value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-document.getElementById("omzet").addEventListener("input", function () {
-  formatRupiahInput(this);
-});
-
-document.getElementById("keluar").addEventListener("input", function () {
-  formatRupiahInput(this);
-});
-
-// Convert to number before sending
-function getNumber(str) {
-  return parseInt(str.replace(/[^\d]/g, "")) || 0;
-}
+      setStatus("Gagal mengirim!", true);
     });
   }
 </script>
