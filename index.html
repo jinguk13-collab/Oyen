@@ -36,10 +36,12 @@
   </div>
 
 <script>
-  // Cek apakah user sudah login
-if(localStorage.getItem('loggedIn') !== 'true'){
-  // Kalau belum, redirect ke login
-  window.location.href = 'login.html';
+  if(user === USERNAME && pass === PASSWORD){
+  // Simpan status login
+  localStorage.setItem('loggedIn', 'true');
+  // Redirect ke index.html
+  window.location.href = 'index.html';
+  }
 }
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyghgIPLuyQFv2jkRsZvYOE7e1kxxs_vzcxihvQN-umTWm4d7babCiY53__bb4OOLU51w/exec";
   const btn = document.getElementById('saveBtn');
